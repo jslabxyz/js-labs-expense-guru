@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Labs Financial Planner</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">JS</div>
+                    <div class="brand-name">JS LABS Financial Planner</div>
+                </div>
+                <button class="btn" onclick="exportToCSV()">
+                    <span>📊</span> Export CSV
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="overview-grid">
+            <div class="metric-card income">
+                <div class="metric-label">Total Income</div>
+                <div class="metric-value" id="totalIncome">R0</div>
+                <div class="metric-change" id="incomeChange">0 entries</div>
+            </div>
+            <div class="metric-card expenses">
+                <div class="metric-label">Total Expenses</div>
+                <div class="metric-value" id="totalExpenses">R0</div>
+                <div class="metric-change" id="expenseChange">0 entries</div>
+            </div>
+            <div class="metric-card net">
+                <div class="metric-label">Net Income</div>
+                <div class="metric-value" id="netIncome">R0</div>
+                <div class="metric-change">Monthly average</div>
+            </div>
+            <div class="metric-card savings">
+                <div class="metric-label">Savings Rate</div>
+                <div class="metric-value" id="savingsRate">0%</div>
+                <div class="metric-change">Of total income</div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <div class="sidebar">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💰 Add Income</h3>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-input" id="incomeDescription" placeholder="e.g., Salary, Freelance">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="incomeDate">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-input" id="incomeAmount" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Currency</label>
+                            <select class="form-select" id="incomeCurrency">
+                                <option value="ZAR">ZAR (R)</option>
+                                <option value="USD">USD ($)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addIncome()" style="width: 100%;">Add Income</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💸 Add Expense</h3>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-input" id="expenseDescription" placeholder="e.g., Office Rent">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="expenseCategory">
+                            <option value="">Select category...</option>
+                            <option value="Housing">Housing</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Food">Food</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="expenseDate">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-input" id="expenseAmount" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Currency</label>
+                            <select class="form-select" id="expenseCurrency">
+                                <option value="ZAR">ZAR (R)</option>
+                                <option value="USD">USD ($)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addExpense()" style="width: 100%;">Add Expense</button>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="card">
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab('income')">Income</button>
+                        <button class="tab" onclick="switchTab('expenses')">Expenses</button>
+                        <button class="tab" onclick="switchTab('analytics')">Analytics</button>
+                    </div>
+
+                    <div class="tab-content active" id="incomeTab">
+                        <div id="incomeList">
+                            <div class="empty-state">
+                                <div class="empty-icon">💰</div>
+                                <p>No income entries yet. Add your first income to get started!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="expensesTab">
+                        <div id="expensesList">
+                            <div class="empty-state">
+                                <div class="empty-icon">💸</div>
+                                <p>No expense entries yet. Add your first expense to start tracking!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="analyticsTab">
+                        <div class="analytics-grid">
+                            <div class="card">
+                                <h3 class="card-title">📈 Expense by Category</h3>
+                                <div id="categoryBreakdown" class="category-list">
+                                    <div class="empty-state">
+                                        <p>Add expenses to see breakdown</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <h3 class="card-title">💰 Income Sources</h3>
+                                <div id="incomeBreakdown" class="category-list">
+                                    <div class="empty-state">
+                                        <p>Add income to see breakdown</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
