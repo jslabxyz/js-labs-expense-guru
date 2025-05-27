@@ -427,7 +427,7 @@ function exportToPDF() {
 
     // Title
     doc.setFontSize(16);
-    doc.text('Financial Report', 20, 20);
+    doc.text('JS Labs: Expense Guru Report', 20, 20);
 
     // Income Section
     doc.setFontSize(14);

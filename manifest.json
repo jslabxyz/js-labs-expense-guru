@@ -1,6 +1,6 @@
 {
-  "name": "JS Labs Financial Planner",
-  "short_name": "Financial Planner",
+  "name": "JS Labs: Expense Guru",
+  "short_name": "Expense Guru",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
