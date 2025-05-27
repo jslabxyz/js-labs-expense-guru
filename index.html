@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
     <title>JS Labs Financial Planner</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -16,6 +17,9 @@
                 </div>
                 <button class="btn" onclick="exportToCSV()">
                     <span>📊</span> Export CSV
+                </button>
+                <button class="btn" onclick="exportToPDF()">
+                    <span>📄</span> Export PDF
                 </button>
             </div>
         </div>
@@ -123,6 +127,8 @@
                         <button class="tab active" onclick="switchTab('income')">Income</button>
                         <button class="tab" onclick="switchTab('expenses')">Expenses</button>
                         <button class="tab" onclick="switchTab('analytics')">Analytics</button>
+                        <button class="tab" onclick="switchTab('table')">Table</button>
+                        <button class="tab" onclick="switchTab('month')">Month</button>
                     </div>
 
                     <div class="tab-content active" id="incomeTab">
@@ -160,6 +166,35 @@
                                         <p>Add income to see breakdown</p>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="tableTab">
+                        <div class="table-container">
+                            <h3 class="card-title">Expense Details</h3>
+                            <table id="expenseTable">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Currency</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Table rows will be populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="monthTab">
+                        <div class="month-container">
+                            <h3 class="card-title">Monthly Overview</h3>
+                            <div id="monthlyOverview">
+                                <!-- Monthly data will be populated dynamically -->
                             </div>
                         </div>
                     </div>

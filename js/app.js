@@ -321,6 +321,46 @@ function updateIncomeBreakdown() {
     `).join('');
 }
 
+// Update table with expense details
+function updateExpenseTable() {
+    const tableBody = document.querySelector('#expenseTable tbody');
+    tableBody.innerHTML = '';
+
+    data.expenses.forEach(expense => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${expense.description}</td>
+            <td>${expense.category}</td>
+            <td>${new Date(expense.date).toLocaleDateString()}</td>
+            <td>${formatCurrency(expense.amount)}</td>
+            <td>${expense.currency}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Update monthly overview
+function updateMonthlyOverview() {
+    const monthlyOverview = document.getElementById('monthlyOverview');
+    const monthlyData = {};
+
+    data.expenses.forEach(expense => {
+        const month = new Date(expense.date).toLocaleString('default', { month: 'long' });
+        if (!monthlyData[month]) {
+            monthlyData[month] = 0;
+        }
+        monthlyData[month] += expense.amountZAR;
+    });
+
+    let html = '<ul>';
+    for (const [month, amount] of Object.entries(monthlyData)) {
+        html += `<li>${month}: ${formatCurrency(amount)}</li>`;
+    }
+    html += '</ul>';
+
+    monthlyOverview.innerHTML = html;
+}
+
 // Switch tabs
 function switchTab(tabName) {
     // Remove active class from all tabs and content
@@ -335,6 +375,12 @@ function switchTab(tabName) {
         document.getElementById('expensesTab').classList.add('active');
     } else if (tabName === 'analytics') {
         document.getElementById('analyticsTab').classList.add('active');
+    } else if (tabName === 'table') {
+        document.getElementById('tableTab').classList.add('active');
+        updateExpenseTable();
+    } else if (tabName === 'month') {
+        document.getElementById('monthTab').classList.add('active');
+        updateMonthlyOverview();
     }
     
     // Update specific tab content
@@ -372,4 +418,46 @@ function exportToCSV() {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+}
+
+// Export to PDF
+function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(16);
+    doc.text('Financial Report', 20, 20);
+
+    // Income Section
+    doc.setFontSize(14);
+    doc.text('Income', 20, 40);
+    doc.setFontSize(12);
+    data.income.forEach((income, index) => {
+        doc.text(`${income.description}: ${formatCurrency(income.amount)}`, 20, 50 + index * 10);
+    });
+
+    // Expenses Section
+    doc.setFontSize(14);
+    doc.text('Expenses', 20, 100);
+    doc.setFontSize(12);
+    data.expenses.forEach((expense, index) => {
+        doc.text(`${expense.description} (${expense.category}): ${formatCurrency(expense.amount)}`, 20, 110 + index * 10);
+    });
+
+    // Save the PDF
+    doc.save('financial-report.pdf');
+}
+
+// Register service worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch(error => {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
 }
