@@ -530,6 +530,57 @@ canvas {
     background-color: #dc2626;
 }
 
+/* Table Styles */
+#expenseTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+#expenseTable th, #expenseTable td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+}
+#expenseTable th {
+    background: var(--gray-100);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+#expenseTable tr:last-child td {
+    border-bottom: none;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    margin-right: 4px;
+}
+.badge-category {
+    background: var(--accent);
+    color: white;
+}
+.badge-type {
+    background: var(--gray-200);
+    color: var(--gray-700);
+}
+.badge-type-onceoff { background: #f59e0b; color: white; }
+.badge-type-recurring { background: #10b981; color: white; }
+.badge-type-daytoday { background: #3b82f6; color: white; }
+.badge-type-annual { background: #8b5cf6; color: white; }
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .main-layout {
@@ -556,6 +607,11 @@ canvas {
     .header-buttons .btn {
         flex: 1;
         min-width: 120px;
+    }
+
+    #expenseTable th, #expenseTable td {
+        padding: 10px 6px;
+        font-size: 13px;
     }
 }
 
