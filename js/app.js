@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('expenseDate').value = today;
     
     updateOverview();
+    updateMonthlyView();
 });
 
 // Format currency
@@ -564,7 +565,218 @@ function updateIncomeChart() {
     });
 }
 
-// Switch tabs
+// Calendar and Month View Functions
+let currentDate = new Date();
+
+function updateMonthlyView() {
+    const selectedMonth = document.getElementById('monthSelect').value;
+    if (selectedMonth) {
+        const [year, month] = selectedMonth.split('-');
+        currentDate = new Date(year, month - 1);
+    }
+    updateCalendar();
+    updateMonthSummary();
+}
+
+function previousMonth() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    updateCalendar();
+    updateMonthSummary();
+}
+
+function nextMonth() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    updateCalendar();
+    updateMonthSummary();
+}
+
+function updateCalendar() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    // Update month/year display
+    document.getElementById('currentMonthYear').textContent = 
+        currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+    
+    // Update month selector
+    updateMonthSelector();
+    
+    // Get first day of month and total days
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const totalDays = lastDay.getDate();
+    const startingDay = firstDay.getDay();
+    
+    // Create calendar grid
+    const calendarGrid = document.getElementById('calendarGrid');
+    calendarGrid.innerHTML = '';
+    
+    // Add empty cells for days before first of month
+    for (let i = 0; i < startingDay; i++) {
+        calendarGrid.appendChild(createEmptyDay());
+    }
+    
+    // Add days of month
+    for (let day = 1; day <= totalDays; day++) {
+        const date = new Date(year, month, day);
+        const dayElement = createDayElement(date);
+        calendarGrid.appendChild(dayElement);
+    }
+}
+
+function createEmptyDay() {
+    const div = document.createElement('div');
+    div.className = 'calendar-day empty';
+    return div;
+}
+
+function createDayElement(date) {
+    const div = document.createElement('div');
+    div.className = 'calendar-day';
+    
+    // Check if it's today
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) {
+        div.classList.add('today');
+    }
+    
+    // Add day number
+    const dayNumber = document.createElement('div');
+    dayNumber.className = 'calendar-day-number';
+    dayNumber.textContent = date.getDate();
+    div.appendChild(dayNumber);
+    
+    // Add expenses for this day
+    const expenses = getExpensesForDate(date);
+    if (expenses.length > 0) {
+        div.classList.add('has-expenses');
+        const expensesDiv = document.createElement('div');
+        expensesDiv.className = 'calendar-expenses';
+        expenses.forEach(expense => {
+            const expenseDiv = document.createElement('div');
+            expenseDiv.className = 'calendar-expense';
+            expenseDiv.textContent = `${expense.description}: ${formatCurrency(expense.amount)}`;
+            expensesDiv.appendChild(expenseDiv);
+        });
+        div.appendChild(expensesDiv);
+    }
+    
+    return div;
+}
+
+function getExpensesForDate(date) {
+    return data.expenses.filter(expense => {
+        const expenseDate = new Date(expense.date);
+        return expenseDate.toDateString() === date.toDateString();
+    });
+}
+
+function updateMonthSelector() {
+    const monthSelect = document.getElementById('monthSelect');
+    const months = new Set();
+    
+    // Get all months from expenses
+    data.expenses.forEach(expense => {
+        const date = new Date(expense.date);
+        const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        months.add(monthYear);
+    });
+    
+    // Add current month if empty
+    const currentMonthYear = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+    months.add(currentMonthYear);
+    
+    // Update select options
+    monthSelect.innerHTML = Array.from(months)
+        .sort()
+        .map(monthYear => {
+            const [year, month] = monthYear.split('-');
+            const date = new Date(year, month - 1);
+            const selected = monthYear === currentMonthYear ? 'selected' : '';
+            return `<option value="${monthYear}" ${selected}>
+                ${date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+            </option>`;
+        })
+        .join('');
+}
+
+// Expense Tracking Functions
+function filterExpenses() {
+    const searchTerm = document.getElementById('searchExpense').value.toLowerCase();
+    const categoryFilter = document.getElementById('filterCategory').value;
+    const typeFilter = document.getElementById('filterType').value;
+    
+    // Update category filter options
+    updateCategoryFilter();
+    
+    // Filter expenses
+    const filteredExpenses = data.expenses.filter(expense => {
+        const matchesSearch = expense.description.toLowerCase().includes(searchTerm) ||
+                            expense.notes?.toLowerCase().includes(searchTerm);
+        const matchesCategory = !categoryFilter || expense.category === categoryFilter;
+        const matchesType = !typeFilter || expense.type === typeFilter;
+        return matchesSearch && matchesCategory && matchesType;
+    });
+    
+    // Update table with filtered expenses
+    updateExpenseTable(filteredExpenses);
+}
+
+function updateCategoryFilter() {
+    const categoryFilter = document.getElementById('filterCategory');
+    const categories = new Set(data.expenses.map(expense => expense.category));
+    
+    // Update options
+    categoryFilter.innerHTML = '<option value="">All Categories</option>' +
+        Array.from(categories)
+            .sort()
+            .map(category => `<option value="${category}">${category}</option>`)
+            .join('');
+}
+
+function sortExpenses() {
+    const sortBy = document.getElementById('sortExpenses').value;
+    const [field, direction] = sortBy.split('-');
+    
+    const sortedExpenses = [...data.expenses].sort((a, b) => {
+        let comparison = 0;
+        if (field === 'date') {
+            comparison = new Date(a.date) - new Date(b.date);
+        } else if (field === 'amount') {
+            comparison = a.amount - b.amount;
+        }
+        return direction === 'desc' ? -comparison : comparison;
+    });
+    
+    updateExpenseTable(sortedExpenses);
+}
+
+// Update expense table to accept filtered/sorted expenses
+function updateExpenseTable(expenses = data.expenses) {
+    const tableBody = document.querySelector('#expenseTable tbody');
+    tableBody.innerHTML = '';
+
+    if (expenses.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888; padding:2rem;">No expenses found</td></tr>`;
+        return;
+    }
+
+    expenses.forEach(expense => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${expense.description}</td>
+            <td><span class="badge badge-category">${expense.category}</span></td>
+            <td><span class="badge badge-type badge-type-${expense.type.replace(/[^a-zA-Z]/g, '').toLowerCase()}">${expense.type}</span></td>
+            <td>${new Date(expense.date).toLocaleDateString()}</td>
+            <td>${formatCurrency(expense.amount)}</td>
+            <td>${expense.currency}</td>
+            <td>${expense.notes ? `<span class="notes">${expense.notes}</span>` : ''}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Update switchTab function
 function switchTab(tabName) {
     // Remove active class from all tabs and content
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
@@ -572,27 +784,24 @@ function switchTab(tabName) {
     
     // Add active class to selected tab and content
     event.target.classList.add('active');
+    
+    // Handle specific tab content
     if (tabName === 'income') {
         document.getElementById('incomeTab').classList.add('active');
+        updateIncomeList();
     } else if (tabName === 'expenses') {
         document.getElementById('expensesTab').classList.add('active');
+        updateExpensesList();
     } else if (tabName === 'analytics') {
         document.getElementById('analyticsTab').classList.add('active');
-    } else if (tabName === 'table') {
-        document.getElementById('tableTab').classList.add('active');
+        updateAnalytics();
+    } else if (tabName === 'tracking') {
+        document.getElementById('trackingTab').classList.add('active');
+        updateCategoryFilter();
         updateExpenseTable();
     } else if (tabName === 'month') {
         document.getElementById('monthTab').classList.add('active');
-        updateMonthlyOverview();
-    }
-    
-    // Update specific tab content
-    if (tabName === 'income') {
-        updateIncomeList();
-    } else if (tabName === 'expenses') {
-        updateExpensesList();
-    } else if (tabName === 'analytics') {
-        updateAnalytics();
+        updateMonthlyView();
     }
 }
 

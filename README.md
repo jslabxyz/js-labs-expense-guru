@@ -1,126 +1,150 @@
-# JS Labs Financial Planner
+# JS Labs: Expense Guru
 
-A modern, responsive personal finance tracker built with vanilla HTML, CSS, and JavaScript.
+A modern, feature-rich expense tracking web application that helps you manage your finances with ease. Built with vanilla JavaScript, HTML, and CSS, this Progressive Web App (PWA) offers a seamless experience across all devices.
 
-## 🚀 Live Demo
+## 🌟 Features
 
-View the live application: [https://jslabxyz.github.io/js-labs-financial-planner/](https://jslabxyz.github.io/js-labs-financial-planner/)
+### 📊 Expense Management
+- Add and track expenses with detailed information
+- Categorize expenses with custom categories
+- Specify expense types (Once-off, Monthly, Day-to-day, Annual)
+- Add optional notes to expenses
+- Support for multiple currencies (ZAR, USD)
 
-## ✨ Features
+### 💰 Income Tracking
+- Record income sources
+- Track multiple income streams
+- Currency conversion support
 
-- ✅ **Income & Expense Tracking** - Add and manage financial transactions
-- ✅ **Multi-Currency Support** - Support for ZAR and USD with automatic conversion
-- ✅ **Real-time Analytics** - View spending by category and income sources
-- ✅ **Data Export** - Export your financial data to CSV format
-- ✅ **Responsive Design** - Works seamlessly on desktop and mobile devices
-- ✅ **Clean Interface** - Modern, intuitive user experience
-- ✅ **Local Storage** - Your data persists between sessions
+### 📅 Calendar View
+- Visual calendar display of expenses
+- Monthly overview with expense details
+- Easy navigation between months
+- Highlighted current day and expense dates
 
-## 🛠 Getting Started
+### 📈 Analytics
+- Expense breakdown by category
+- Income overview charts
+- Monthly savings rate calculation
+- Visual representation of spending patterns
 
-### Prerequisites
+### 🔍 Expense Tracking
+- Advanced filtering and search capabilities
+- Sort by date or amount
+- Filter by category and type
+- Export data to CSV
+- Responsive table design
 
-- A modern web browser (Chrome, Firefox, Safari, Edge)
-- No server required - runs entirely in the browser
+### 📱 Progressive Web App
+- Install on your device
+- Works offline
+- Fast and responsive
+- Modern, clean interface
 
-### Installation
+## 🚀 Getting Started
 
 1. Clone the repository:
-```bash
-git clone https://github.com/jslabxyz/js-labs-financial-planner.git
-cd js-labs-financial-planner
-```
+   ```bash
+   git clone https://github.com/jslabxyz/js-labs-expense-guru.git
+   ```
 
-2. Open `index.html` in your web browser:
-```bash
-open index.html
-```
+2. Open `index.html` in your browser or serve it using a local server:
+   ```bash
+   # Using Python
+   python -m http.server 8000
+   
+   # Using Node.js
+   npx serve
+   ```
 
-Or simply double-click the `index.html` file.
+3. Access the application at `http://localhost:8000`
 
-## 📖 Usage
-
-### Adding Income
-1. Fill in the income form in the left sidebar
-2. Enter description, date, amount, and currency
-3. Click "Add Income" to save
+## 💻 Usage
 
 ### Adding Expenses
-1. Fill in the expense form in the left sidebar
-2. Select a category, enter description, date, amount, and currency
-3. Click "Add Expense" to save
+1. Navigate to the "Add Expense" section
+2. Enter expense details:
+   - Description
+   - Category (select or type custom)
+   - Type (Once-off, Monthly, Day-to-day, Annual)
+   - Amount
+   - Currency
+   - Optional notes
+3. Click "Add Expense"
+
+### Adding Income
+1. Navigate to the "Add Income" section
+2. Enter income details:
+   - Description
+   - Amount
+   - Currency
+   - Date
+3. Click "Add Income"
 
 ### Viewing Analytics
-- Switch between Income, Expenses, and Analytics tabs
-- View categorized breakdowns of your spending
-- Monitor your savings rate and net income
+- Switch to the "Analytics" tab to view:
+  - Expense breakdown by category
+  - Income overview
+  - Category breakdown
+  - Income sources
 
-### Exporting Data
-- Click the "Export CSV" button in the header
-- Download includes all income and expense entries
-- Compatible with Excel, Google Sheets, and other spreadsheet applications
+### Calendar View
+- Switch to the "Month" tab to:
+  - View expenses on a calendar
+  - Navigate between months
+  - See daily expense details
+  - View monthly summaries
 
-## 📁 Project Structure
-
-```
-js-labs-financial-planner/
-├── index.html          # Main HTML file
-├── css/
-│   └── styles.css      # All CSS styles
-├── js/
-│   └── app.js          # Application logic
-└── README.md           # Project documentation
-```
-
-## 💱 Currency Support
-
-- **ZAR (South African Rand)** - Primary currency
-- **USD (US Dollar)** - Automatically converted to ZAR at a configurable rate
-- Exchange rate: 1 USD = 18.50 ZAR (configurable in `js/app.js`)
-
-## 🌐 Browser Support
-
-- Chrome 70+
-- Firefox 65+
-- Safari 12+
-- Edge 79+
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 🔮 Future Enhancements
-
-- [ ] Advanced budget planning and tracking
-- [ ] Data visualization with interactive charts
-- [ ] Multiple account support
-- [ ] Recurring transaction templates
-- [ ] Import from bank statements
-- [ ] Progressive Web App (PWA) features
-- [ ] Cloud sync capabilities
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 👨‍💻 Author
-
-**JS Labs** - Personal Finance Solutions
-- Website: [jslabs.xyz](https://jslabs.xyz)
-- GitHub: [@jslabxyz](https://github.com/jslabxyz)
-
----
-
-*Built with ❤️ using vanilla JavaScript*
+### Expense Tracking
+- Use the "Expense Tracking" tab to:
+  - Search expenses
+  - Filter by category and type
+  - Sort by date or amount
+  - Export data to CSV
 
 ## 🔧 Technical Details
 
-- **Framework**: Vanilla JavaScript (no dependencies)
-- **Styling**: Custom CSS with CSS Grid and Flexbox
-- **Storage**: Browser localStorage for persistence
-- **Icons**: Emoji-based icons for universal compatibility
-- **Responsive**: Mobile-first design approach
+### Technologies Used
+- HTML5
+- CSS3 (with CSS Variables)
+- Vanilla JavaScript
+- Chart.js for visualizations
+- Local Storage for data persistence
+- Service Workers for PWA functionality
+
+### Data Storage
+- All data is stored locally in your browser
+- No server required
+- Data persists between sessions
+- Export functionality for backup
+
+## 📱 PWA Features
+- Install on home screen
+- Offline functionality
+- Responsive design
+- Fast loading
+- Native-like experience
+
+## 🔄 Data Management
+- Export to CSV
+- Export to PDF
+- Reset data option
+- Automatic data persistence
+
+## 🎨 Design
+- Clean, modern interface
+- Responsive layout
+- Dark/light mode support
+- Intuitive navigation
+- Visual feedback for actions
+
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+- Chart.js for beautiful visualizations
+- Modern CSS features for responsive design
+- PWA capabilities for offline functionality

@@ -633,3 +633,147 @@ textarea.form-input {
     color: var(--gray-600);
     font-style: italic;
 }
+
+/* Table Controls */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.table-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-group .form-input,
+.filter-group .form-select {
+    min-width: 150px;
+}
+
+/* Calendar View */
+.calendar-view {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+.calendar-header {
+    margin-bottom: 1rem;
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    position: relative;
+    min-height: 80px;
+}
+
+.calendar-day.today {
+    background: var(--gray-50);
+    border-color: var(--accent);
+}
+
+.calendar-day.has-expenses {
+    background: var(--gray-50);
+}
+
+.calendar-day-number {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: 0.25rem;
+}
+
+.calendar-expenses {
+    font-size: 0.75rem;
+}
+
+.calendar-expense {
+    background: var(--accent);
+    color: white;
+    padding: 0.125rem 0.25rem;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Month View Layout */
+.month-view {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.month-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.month-selector {
+    min-width: 200px;
+}
+
+@media (max-width: 768px) {
+    .month-view {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .table-controls {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        flex-direction: column;
+    }
+    
+    .filter-group .form-input,
+    .filter-group .form-select {
+        width: 100%;
+    }
+}
