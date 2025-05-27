@@ -1,7 +1,13 @@
 // Data storage
 let data = {
     income: [],
-    expenses: []
+    expenses: [],
+    planning: {
+        taxAmount: 0,
+        taxCurrency: 'ZAR',
+        savingsAmount: 0,
+        savingsCurrency: 'ZAR'
+    }
 };
 
 const USD_TO_ZAR = 18.50;
@@ -35,10 +41,18 @@ function updateOverview() {
     const netIncome = totalIncome - totalExpenses;
     const savingsRate = totalIncome > 0 ? ((netIncome / totalIncome) * 100) : 0;
 
+    // Calculate tax and savings amounts in ZAR
+    const taxAmountZAR = convertToZAR(data.planning.taxAmount, data.planning.taxCurrency);
+    const savingsAmountZAR = convertToZAR(data.planning.savingsAmount, data.planning.savingsCurrency);
+
     document.getElementById('totalIncome').textContent = formatCurrency(totalIncome);
     document.getElementById('totalExpenses').textContent = formatCurrency(totalExpenses);
     document.getElementById('netIncome').textContent = formatCurrency(netIncome);
     document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
+    document.getElementById('taxAllocation').textContent = formatCurrency(taxAmountZAR);
+    document.getElementById('savingsGoal').textContent = formatCurrency(savingsAmountZAR);
+    document.getElementById('taxChange').textContent = totalIncome > 0 ? ((taxAmountZAR / totalIncome) * 100).toFixed(1) + '% of income' : '0% of income';
+    document.getElementById('savingsGoalChange').textContent = totalIncome > 0 ? ((savingsAmountZAR / totalIncome) * 100).toFixed(1) + '% of income' : '0% of income';
 
     document.getElementById('incomeChange').textContent = `${data.income.length} entries`;
     document.getElementById('expenseChange').textContent = `${data.expenses.length} entries`;
@@ -50,6 +64,53 @@ function updateOverview() {
     } else {
         netElement.style.color = 'var(--danger)';
     }
+
+    // Update planning tab if it's active
+    if (document.getElementById('planningTab').classList.contains('active')) {
+        updatePlanningTab();
+    }
+}
+
+// Update planning tab
+function updatePlanningTab() {
+    const totalIncome = data.income.reduce((sum, item) => sum + item.amountZAR, 0);
+    const taxAmountZAR = convertToZAR(data.planning.taxAmount, data.planning.taxCurrency);
+    const savingsAmountZAR = convertToZAR(data.planning.savingsAmount, data.planning.savingsCurrency);
+    const availableAmount = totalIncome - taxAmountZAR - savingsAmountZAR;
+
+    // Update tax section
+    document.getElementById('taxAmount').value = data.planning.taxAmount;
+    document.getElementById('taxCurrency').value = data.planning.taxCurrency;
+    document.getElementById('taxAmountZAR').textContent = formatCurrency(taxAmountZAR);
+
+    // Update savings section
+    document.getElementById('savingsAmount').value = data.planning.savingsAmount;
+    document.getElementById('savingsCurrency').value = data.planning.savingsCurrency;
+    document.getElementById('savingsAmountZAR').textContent = formatCurrency(savingsAmountZAR);
+
+    // Update summary
+    document.getElementById('planningTotalIncome').textContent = formatCurrency(totalIncome);
+    document.getElementById('planningTaxAllocation').textContent = formatCurrency(taxAmountZAR);
+    document.getElementById('planningSavingsGoal').textContent = formatCurrency(savingsAmountZAR);
+    document.getElementById('planningAvailableAmount').textContent = formatCurrency(availableAmount);
+}
+
+// Handle tax amount change
+function updateTaxAmount() {
+    const amount = parseFloat(document.getElementById('taxAmount').value) || 0;
+    const currency = document.getElementById('taxCurrency').value;
+    data.planning.taxAmount = amount;
+    data.planning.taxCurrency = currency;
+    updateOverview();
+}
+
+// Handle savings amount change
+function updateSavingsAmount() {
+    const amount = parseFloat(document.getElementById('savingsAmount').value) || 0;
+    const currency = document.getElementById('savingsCurrency').value;
+    data.planning.savingsAmount = amount;
+    data.planning.savingsCurrency = currency;
+    updateOverview();
 }
 
 // Add income
@@ -87,9 +148,11 @@ function addIncome() {
 // Add expense
 function addExpense() {
     const description = document.getElementById('expenseDescription').value.trim();
-    const category = document.getElementById('expenseCategory').value.trim();
+    const categorySelect = document.getElementById('expenseCategorySelect').value;
+    const categoryInput = document.getElementById('expenseCategoryInput').value.trim();
+    const category = categoryInput || categorySelect;
     const type = document.getElementById('expenseType').value;
-    const notes = document.getElementById('expenseNotes').value.trim();
+    const notes = document.getElementById('expenseNotes')?.value?.trim() || '';
     const date = document.getElementById('expenseDate').value;
     const amount = parseFloat(document.getElementById('expenseAmount').value);
     const currency = document.getElementById('expenseCurrency').value;
@@ -115,7 +178,8 @@ function addExpense() {
     
     // Clear form
     document.getElementById('expenseDescription').value = '';
-    document.getElementById('expenseCategory').value = '';
+    document.getElementById('expenseCategorySelect').value = '';
+    document.getElementById('expenseCategoryInput').value = '';
     document.getElementById('expenseAmount').value = '';
     document.getElementById('expenseNotes').value = '';
     document.getElementById('expenseType').value = 'Once-off';
@@ -802,6 +866,9 @@ function switchTab(tabName) {
     } else if (tabName === 'month') {
         document.getElementById('monthTab').classList.add('active');
         updateMonthlyView();
+    } else if (tabName === 'planning') {
+        document.getElementById('planningTab').classList.add('active');
+        updatePlanningTab();
     }
 }
 
@@ -845,16 +912,29 @@ function exportToPDF() {
     doc.setFontSize(14);
     doc.text('Income', 20, 40);
     doc.setFontSize(12);
-    data.income.forEach((income, index) => {
-        doc.text(`${income.description}: ${formatCurrency(income.amount)}`, 20, 50 + index * 10);
+    let yPos = 50;
+    data.income.forEach((income) => {
+        if (yPos > 270) { // Check if we need a new page
+            doc.addPage();
+            yPos = 20;
+        }
+        doc.text(`${income.description}: ${formatCurrency(income.amount)}`, 20, yPos);
+        yPos += 10;
     });
 
     // Expenses Section
+    yPos += 10; // Add some space between sections
     doc.setFontSize(14);
-    doc.text('Expenses', 20, 100);
+    doc.text('Expenses', 20, yPos);
+    yPos += 10;
     doc.setFontSize(12);
-    data.expenses.forEach((expense, index) => {
-        doc.text(`${expense.description} (${expense.category}): ${formatCurrency(expense.amount)}`, 20, 110 + index * 10);
+    data.expenses.forEach((expense) => {
+        if (yPos > 270) { // Check if we need a new page
+            doc.addPage();
+            yPos = 20;
+        }
+        doc.text(`${expense.description} (${expense.category}): ${formatCurrency(expense.amount)}`, 20, yPos);
+        yPos += 10;
     });
 
     // Save the PDF
@@ -879,7 +959,13 @@ function resetData() {
     if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
         data = {
             income: [],
-            expenses: []
+            expenses: [],
+            planning: {
+                taxAmount: 0,
+                taxCurrency: 'ZAR',
+                savingsAmount: 0,
+                savingsCurrency: 'ZAR'
+            }
         };
         localStorage.removeItem('financialData');
         updateOverview();

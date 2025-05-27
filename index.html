@@ -7,6 +7,7 @@
     <title>JS Labs: Expense Guru</title>
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="header">
@@ -52,6 +53,16 @@
                 <div class="metric-label">Savings Rate</div>
                 <div class="metric-value" id="savingsRate">0%</div>
                 <div class="metric-change">Of total income</div>
+            </div>
+            <div class="metric-card tax">
+                <div class="metric-label">Tax Allocation</div>
+                <div class="metric-value" id="taxAllocation">R0</div>
+                <div class="metric-change" id="taxChange">0% of income</div>
+            </div>
+            <div class="metric-card savings-goal">
+                <div class="metric-label">Savings Goal</div>
+                <div class="metric-value" id="savingsGoal">R0</div>
+                <div class="metric-change" id="savingsGoalChange">0% of income</div>
             </div>
         </div>
 
@@ -149,6 +160,7 @@
                         <button class="tab" onclick="switchTab('analytics')">Analytics</button>
                         <button class="tab" onclick="switchTab('tracking')">Expense Tracking</button>
                         <button class="tab" onclick="switchTab('month')">Month</button>
+                        <button class="tab" onclick="switchTab('planning')">Financial Planning</button>
                     </div>
 
                     <div class="tab-content active" id="incomeTab">
@@ -281,6 +293,73 @@
                                 <div class="month-summary">
                                     <div id="monthlyOverview">
                                         <!-- Monthly data will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="planningTab">
+                        <div class="planning-container">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">💰 Financial Planning</h3>
+                                </div>
+                                <div class="planning-grid">
+                                    <div class="planning-section">
+                                        <h4>Tax Allocation</h4>
+                                        <div class="form-group">
+                                            <label class="form-label">Tax Amount</label>
+                                            <div class="form-row">
+                                                <input type="number" class="form-input" id="taxAmount" min="0" step="0.01" placeholder="0.00">
+                                                <select class="form-select" id="taxCurrency">
+                                                    <option value="ZAR">ZAR (R)</option>
+                                                    <option value="USD">USD ($)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Tax Amount (ZAR)</label>
+                                            <div class="amount-display" id="taxAmountZAR">R0</div>
+                                        </div>
+                                    </div>
+                                    <div class="planning-section">
+                                        <h4>Savings Goal</h4>
+                                        <div class="form-group">
+                                            <label class="form-label">Savings Amount</label>
+                                            <div class="form-row">
+                                                <input type="number" class="form-input" id="savingsAmount" min="0" step="0.01" placeholder="0.00">
+                                                <select class="form-select" id="savingsCurrency">
+                                                    <option value="ZAR">ZAR (R)</option>
+                                                    <option value="USD">USD ($)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Savings Amount (ZAR)</label>
+                                            <div class="amount-display" id="savingsAmountZAR">R0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="planning-summary">
+                                    <h4>Monthly Allocation Summary</h4>
+                                    <div class="summary-grid">
+                                        <div class="summary-item">
+                                            <span class="label">Total Income:</span>
+                                            <span class="value" id="planningTotalIncome">R0</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="label">Tax Allocation:</span>
+                                            <span class="value" id="planningTaxAllocation">R0</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="label">Savings Goal:</span>
+                                            <span class="value" id="planningSavingsGoal">R0</span>
+                                        </div>
+                                        <div class="summary-item">
+                                            <span class="label">Available for Expenses:</span>
+                                            <span class="value" id="planningAvailableAmount">R0</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

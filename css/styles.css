@@ -777,3 +777,80 @@ textarea.form-input {
         width: 100%;
     }
 }
+
+/* Planning Tab Styles */
+.planning-container {
+    padding: 1rem;
+}
+
+.planning-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.planning-section {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.planning-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+}
+
+.amount-display {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 0.5rem;
+}
+
+.planning-summary {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.planning-summary h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.summary-item .label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.summary-item .value {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Update metric cards for tax and savings */
+.metric-card.tax {
+    background: linear-gradient(135deg, #f59e0b20, #f59e0b40);
+    border-color: #f59e0b;
+}
+
+.metric-card.savings-goal {
+    background: linear-gradient(135deg, #10b98120, #10b98140);
+    border-color: #10b981;
+}
