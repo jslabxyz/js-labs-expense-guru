@@ -83,34 +83,18 @@ function addIncome() {
     updateAnalytics();
 }
 
-// Sync category select and input
-function syncCategoryInput() {
-    const select = document.getElementById('expenseCategorySelect');
-    const input = document.getElementById('expenseCategoryInput');
-    if (select.value) {
-        input.value = select.value;
-    }
-}
-function syncCategorySelect() {
-    const select = document.getElementById('expenseCategorySelect');
-    const input = document.getElementById('expenseCategoryInput');
-    // If input matches an option, select it; otherwise, set to blank
-    const found = Array.from(select.options).find(opt => opt.value.toLowerCase() === input.value.toLowerCase());
-    select.value = found ? found.value : '';
-}
-
 // Add expense
 function addExpense() {
     const description = document.getElementById('expenseDescription').value.trim();
-    // Use the input for category
-    const category = document.getElementById('expenseCategoryInput').value.trim();
+    const category = document.getElementById('expenseCategory').value.trim();
     const type = document.getElementById('expenseType').value;
+    const notes = document.getElementById('expenseNotes').value.trim();
     const date = document.getElementById('expenseDate').value;
     const amount = parseFloat(document.getElementById('expenseAmount').value);
     const currency = document.getElementById('expenseCurrency').value;
 
     if (!description || !category || !date || isNaN(amount) || amount <= 0) {
-        alert('Please fill in all fields with valid values');
+        alert('Please fill in all required fields with valid values');
         return;
     }
 
@@ -119,6 +103,7 @@ function addExpense() {
         description,
         category,
         type,
+        notes,
         date,
         amount,
         currency,
@@ -129,14 +114,15 @@ function addExpense() {
     
     // Clear form
     document.getElementById('expenseDescription').value = '';
-    document.getElementById('expenseCategorySelect').value = '';
-    document.getElementById('expenseCategoryInput').value = '';
+    document.getElementById('expenseCategory').value = '';
     document.getElementById('expenseAmount').value = '';
+    document.getElementById('expenseNotes').value = '';
     document.getElementById('expenseType').value = 'Once-off';
     
     updateOverview();
     updateExpensesList();
     updateAnalytics();
+    updateExpenseTable();
 }
 
 // Delete income
@@ -350,7 +336,7 @@ function updateExpenseTable() {
     tableBody.innerHTML = '';
 
     if (data.expenses.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888; padding:2rem;">No expenses recorded yet.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888; padding:2rem;">No expenses recorded yet.</td></tr>`;
         return;
     }
 
@@ -363,6 +349,7 @@ function updateExpenseTable() {
             <td>${new Date(expense.date).toLocaleDateString()}</td>
             <td>${formatCurrency(expense.amount)}</td>
             <td>${expense.currency}</td>
+            <td>${expense.notes ? `<span class="notes">${expense.notes}</span>` : ''}</td>
         `;
         tableBody.appendChild(row);
     });

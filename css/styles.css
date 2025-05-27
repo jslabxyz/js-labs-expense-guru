@@ -580,6 +580,7 @@ canvas {
 .badge-type-recurring { background: #10b981; color: white; }
 .badge-type-daytoday { background: #3b82f6; color: white; }
 .badge-type-annual { background: #8b5cf6; color: white; }
+.badge-type-monthly { background: #10b981; color: white; }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
@@ -619,3 +620,16 @@ canvas {
 .text-success { color: var(--success); }
 .text-danger { color: var(--danger); }
 .text-muted { color: var(--gray-500); }
+
+/* Form Styles */
+textarea.form-input {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* Notes in table */
+.notes {
+    font-size: 13px;
+    color: var(--gray-600);
+    font-style: italic;
+}
