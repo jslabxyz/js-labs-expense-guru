@@ -408,7 +408,129 @@ body {
     margin-left: 8px;
 }
 
-/* Responsive */
+/* Monthly View Styles */
+.month-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.month-card h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+
+.month-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat .label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.stat .value {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.stat .value.income {
+    color: var(--success);
+}
+
+.stat .value.expense {
+    color: var(--danger);
+}
+
+.month-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail .label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.detail .value {
+    font-size: 1rem;
+}
+
+.category-breakdown {
+    margin-top: 1rem;
+}
+
+.category-breakdown h5 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.category-item:last-child {
+    border-bottom: none;
+}
+
+.category-name {
+    color: var(--text-primary);
+}
+
+.category-amount {
+    font-weight: 500;
+}
+
+/* Chart Styles */
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+    margin: 1rem 0;
+}
+
+/* Header Buttons */
+.header-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .main-layout {
         grid-template-columns: 1fr;
@@ -420,6 +542,20 @@ body {
     
     .overview-grid {
         grid-template-columns: 1fr;
+    }
+
+    .month-stats,
+    .month-details {
+        grid-template-columns: 1fr;
+    }
+
+    .header-buttons {
+        flex-wrap: wrap;
+    }
+
+    .header-buttons .btn {
+        flex: 1;
+        min-width: 120px;
     }
 }
 

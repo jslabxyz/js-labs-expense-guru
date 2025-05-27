@@ -6,6 +6,7 @@
     <link rel="manifest" href="manifest.json">
     <title>JS Labs: Expense Guru</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="header">
@@ -15,12 +16,17 @@
                     <div class="logo">JS</div>
                     <div class="brand-name">JS Labs: Expense Guru</div>
                 </div>
-                <button class="btn" onclick="exportToCSV()">
-                    <span>📊</span> Export CSV
-                </button>
-                <button class="btn" onclick="exportToPDF()">
-                    <span>📄</span> Export PDF
-                </button>
+                <div class="header-buttons">
+                    <button class="btn" onclick="exportToCSV()">
+                        <span>📊</span> Export CSV
+                    </button>
+                    <button class="btn" onclick="exportToPDF()">
+                        <span>📄</span> Export PDF
+                    </button>
+                    <button class="btn btn-danger" onclick="resetData()">
+                        <span>🗑️</span> Reset Data
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -153,6 +159,14 @@
                         <div class="analytics-grid">
                             <div class="card">
                                 <h3 class="card-title">📈 Expense by Category</h3>
+                                <canvas id="expenseChart"></canvas>
+                            </div>
+                            <div class="card">
+                                <h3 class="card-title">💰 Income Overview</h3>
+                                <canvas id="incomeChart"></canvas>
+                            </div>
+                            <div class="card">
+                                <h3 class="card-title">📊 Category Breakdown</h3>
                                 <div id="categoryBreakdown" class="category-list">
                                     <div class="empty-state">
                                         <p>Add expenses to see breakdown</p>
@@ -160,7 +174,7 @@
                                 </div>
                             </div>
                             <div class="card">
-                                <h3 class="card-title">💰 Income Sources</h3>
+                                <h3 class="card-title">💵 Income Sources</h3>
                                 <div id="incomeBreakdown" class="category-list">
                                     <div class="empty-state">
                                         <p>Add income to see breakdown</p>

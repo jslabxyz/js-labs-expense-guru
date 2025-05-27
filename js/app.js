@@ -222,10 +222,12 @@ function updateExpensesList() {
     }).join('');
 }
 
-// Update analytics
+// Update analytics with charts
 function updateAnalytics() {
     updateCategoryBreakdown();
     updateIncomeBreakdown();
+    updateExpenseChart();
+    updateIncomeChart();
 }
 
 // Update category breakdown
@@ -339,26 +341,213 @@ function updateExpenseTable() {
     });
 }
 
-// Update monthly overview
+// Update monthly overview with more details
 function updateMonthlyOverview() {
     const monthlyOverview = document.getElementById('monthlyOverview');
     const monthlyData = {};
 
+    // Process expenses
     data.expenses.forEach(expense => {
-        const month = new Date(expense.date).toLocaleString('default', { month: 'long' });
+        const month = new Date(expense.date).toLocaleString('default', { month: 'long', year: 'numeric' });
+        if (!monthlyData[month]) {
+            monthlyData[month] = {
+                expenses: 0,
+                income: 0,
+                categories: {},
+                topExpense: { amount: 0, description: '' },
+                topIncome: { amount: 0, description: '' }
+            };
+        }
+        monthlyData[month].expenses += expense.amountZAR;
+        
+        // Track categories
+        if (!monthlyData[month].categories[expense.category]) {
+            monthlyData[month].categories[expense.category] = 0;
+        }
+        monthlyData[month].categories[expense.category] += expense.amountZAR;
+
+        // Track top expense
+        if (expense.amountZAR > monthlyData[month].topExpense.amount) {
+            monthlyData[month].topExpense = {
+                amount: expense.amountZAR,
+                description: expense.description
+            };
+        }
+    });
+
+    // Process income
+    data.income.forEach(income => {
+        const month = new Date(income.date).toLocaleString('default', { month: 'long', year: 'numeric' });
+        if (!monthlyData[month]) {
+            monthlyData[month] = {
+                expenses: 0,
+                income: 0,
+                categories: {},
+                topExpense: { amount: 0, description: '' },
+                topIncome: { amount: 0, description: '' }
+            };
+        }
+        monthlyData[month].income += income.amountZAR;
+
+        // Track top income
+        if (income.amountZAR > monthlyData[month].topIncome.amount) {
+            monthlyData[month].topIncome = {
+                amount: income.amountZAR,
+                description: income.description
+            };
+        }
+    });
+
+    // Sort months in reverse chronological order
+    const sortedMonths = Object.entries(monthlyData)
+        .sort((a, b) => new Date(b[0]) - new Date(a[0]));
+
+    let html = '';
+    sortedMonths.forEach(([month, data]) => {
+        const savings = data.income - data.expenses;
+        const savingsRate = data.income > 0 ? (savings / data.income * 100) : 0;
+        
+        html += `
+            <div class="month-card">
+                <h4>${month}</h4>
+                <div class="month-stats">
+                    <div class="stat">
+                        <span class="label">Income:</span>
+                        <span class="value income">${formatCurrency(data.income)}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Expenses:</span>
+                        <span class="value expense">${formatCurrency(data.expenses)}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Savings:</span>
+                        <span class="value ${savings >= 0 ? 'income' : 'expense'}">${formatCurrency(savings)}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Savings Rate:</span>
+                        <span class="value">${savingsRate.toFixed(1)}%</span>
+                    </div>
+                </div>
+                <div class="month-details">
+                    <div class="detail">
+                        <span class="label">Top Expense:</span>
+                        <span class="value">${data.topExpense.description} (${formatCurrency(data.topExpense.amount)})</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Top Income:</span>
+                        <span class="value">${data.topIncome.description} (${formatCurrency(data.topIncome.amount)})</span>
+                    </div>
+                </div>
+                <div class="category-breakdown">
+                    <h5>Category Breakdown</h5>
+                    ${Object.entries(data.categories)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([category, amount]) => `
+                            <div class="category-item">
+                                <span class="category-name">${category}</span>
+                                <span class="category-amount">${formatCurrency(amount)}</span>
+                            </div>
+                        `).join('')}
+                </div>
+            </div>
+        `;
+    });
+
+    monthlyOverview.innerHTML = html || '<div class="empty-state"><p>No data available</p></div>';
+}
+
+// Update expense chart
+function updateExpenseChart() {
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+    
+    // Group expenses by category
+    const categoryData = {};
+    data.expenses.forEach(expense => {
+        if (!categoryData[expense.category]) {
+            categoryData[expense.category] = 0;
+        }
+        categoryData[expense.category] += expense.amountZAR;
+    });
+
+    const labels = Object.keys(categoryData);
+    const values = Object.values(categoryData);
+    const colors = [
+        '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+        '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'
+    ];
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                },
+                title: {
+                    display: true,
+                    text: 'Expenses by Category'
+                }
+            }
+        }
+    });
+}
+
+// Update income chart
+function updateIncomeChart() {
+    const ctx = document.getElementById('incomeChart').getContext('2d');
+    
+    // Group income by month
+    const monthlyData = {};
+    data.income.forEach(income => {
+        const month = new Date(income.date).toLocaleString('default', { month: 'short' });
         if (!monthlyData[month]) {
             monthlyData[month] = 0;
         }
-        monthlyData[month] += expense.amountZAR;
+        monthlyData[month] += income.amountZAR;
     });
 
-    let html = '<ul>';
-    for (const [month, amount] of Object.entries(monthlyData)) {
-        html += `<li>${month}: ${formatCurrency(amount)}</li>`;
-    }
-    html += '</ul>';
+    const labels = Object.keys(monthlyData);
+    const values = Object.values(monthlyData);
 
-    monthlyOverview.innerHTML = html;
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Monthly Income',
+                data: values,
+                backgroundColor: '#10b981',
+                borderColor: '#059669',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Monthly Income Overview'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
 // Switch tabs
@@ -460,4 +649,21 @@ if ('serviceWorker' in navigator) {
         console.log('ServiceWorker registration failed: ', error);
       });
   });
+}
+
+// Reset data function
+function resetData() {
+    if (confirm('Are you sure you want to reset all data? This action cannot be undone.')) {
+        data = {
+            income: [],
+            expenses: []
+        };
+        localStorage.removeItem('financialData');
+        updateOverview();
+        updateIncomeList();
+        updateExpensesList();
+        updateAnalytics();
+        updateExpenseTable();
+        updateMonthlyOverview();
+    }
 }
