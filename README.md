@@ -8,6 +8,7 @@ A simple expense tracking web application built with vanilla JavaScript, HTML, a
 - View monthly summaries
 - Export data to CSV
 - Works offline
+- Dark and light theme support
 
 ## Getting Started
 
@@ -33,6 +34,10 @@ A simple expense tracking web application built with vanilla JavaScript, HTML, a
 ### Viewing Reports
 - Click "Reports" to see monthly summaries
 - Click "Export" to download data
+
+### Theme Toggle
+- Click the theme toggle button in the header to switch between dark and light modes
+- Your theme preference will be saved and restored on subsequent visits
 
 ## Development
 
