@@ -639,19 +639,19 @@ function updateMonthlyView() {
         currentDate = new Date(year, month - 1);
     }
     updateCalendar();
-    updateMonthSummary();
+    updateMonthlyOverview();
 }
 
 function previousMonth() {
     currentDate.setMonth(currentDate.getMonth() - 1);
     updateCalendar();
-    updateMonthSummary();
+    updateMonthlyOverview();
 }
 
 function nextMonth() {
     currentDate.setMonth(currentDate.getMonth() + 1);
     updateCalendar();
-    updateMonthSummary();
+    updateMonthlyOverview();
 }
 
 function updateCalendar() {
